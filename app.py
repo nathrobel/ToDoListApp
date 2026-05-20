@@ -11,10 +11,19 @@ def home():
 
 @app.route("/add", methods = ["POST"])
 def add():
-    #“Go into the templates folder, find index.html, and send it to the browser.
-     # get data from form
-    task = request.form["task"]
-    tasks.append(task)
+    new_task = request.form["task"]
+    task_id = len(tasks)+1
+    tasks.append({"id": task_id, "task": new_task})
+    
+    return redirect("/")
+
+@app.route("/delete", methods = ["POST"])
+def delete():
+    task_id = int(request.form["task_id"])
+    for task in tasks:
+        if task["id"] == task_id:
+            tasks.remove(task)
+            break
     
     return redirect("/")
 

@@ -7,14 +7,23 @@
     <h1>My To-Do List</h1>
 
     <!-- Input Form -->
-    <form action = "/add" method = "POST">
+    <form action = "/add" method = "POST"><!-- Send this form to add route on server -->
+        <!-- action = where the data goes -->
         <input type = "text" name = "task" placeholder="Enter a task" required>
         <button type = "submit">Add</button>
     </form>
 
     <ul>    
-        {% for task in tasks %}
-            <li>{{ task }}</li>
+        {% for item in tasks %}
+            <li>{{ item.task }}
+             <form action="/delete" method="POST" style="display:inline;">
+                <input type="hidden" name="task_id" value="{{ item.id }}">
+
+                <button type="submit">
+                    Delete
+                </button>
+            </form>
+            </li>
     {% endfor %}
 </ul>
 
