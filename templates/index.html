@@ -5,6 +5,13 @@
 </head>
 <body>
     <h1>My To-Do List</h1>
+
+    <!-- Input Form -->
+    <form action = "/add" method = "POST">
+        <input type = "text" name = "task" placeholder="Enter a task" required>
+        <button type = "submit">Add</button>
+    </form>
+
     <ul>    
         {% for task in tasks %}
             <li>{{ task }}</li>
