@@ -1,20 +1,45 @@
 from flask import Flask,render_template,request,redirect
+import psycopg2
 
 app = Flask(__name__)
-tasks = []
+
+
+conn = psycopg2.connect(
+    dbname="todoapp",
+    user="nathanrobel",
+    host="localhost",
+    password=""
+)
+
+conn.autocommit = True
+cur = conn.cursor()
+
 #Read
 @app.route("/")
 def home():
     #“Go into the templates folder, find index.html, and send it to the browser.
+    cur.execute("SELECT id, task FROM tasks ORDER BY id")
+    rows = cur.fetchall()
+
+    tasks = [
+        {"id": r[0], "task": r[1]} for r in rows
+    ]
+
+    
     
     return render_template("index.html",tasks= tasks)
 
 #Create
 @app.route("/add", methods = ["POST"])
 def add():
-    new_task = request.form["task"]
-    task_id = len(tasks)+1
-    tasks.append({"id": task_id, "task": new_task})
+    task = request.form["task"]
+
+    cur.execute(
+        "INSERT INTO tasks (task) VALUES (%s)",
+        (task,)
+    )
+
+    
     
     return redirect("/")
 
@@ -22,10 +47,7 @@ def add():
 @app.route("/delete", methods = ["POST"])
 def delete():
     task_id = int(request.form["task_id"])
-    for task in tasks:
-        if task["id"] == task_id:
-            tasks.remove(task)
-            break
+    cur.execute("DELETE FROM tasks where id =%s",(task_id,))
     
     return redirect("/")
 
@@ -35,10 +57,10 @@ def update():
     task_id = int(request.form["task_id"])
     updated_text = request.form["updated_task"]
      
-    for task in tasks:
-        if task["id"] == task_id:
-            task["task"] = updated_text
-            break
+    cur.execute(
+        "UPDATE tasks SET task = %s WHERE id = %s",
+        (updated_text, task_id)
+    )
     
     return redirect("/")
 
