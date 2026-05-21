@@ -23,6 +23,14 @@
                     Delete
                 </button>
             </form>
+            <form action="/update" method="POST" style="display:inline;">
+                <input type="hidden" name="task_id" value="{{ item.id }}">
+                <input type="text" name="updated_task" value="{{ item.task }}">
+
+                <button type="submit">
+                    Edit
+                </button>
+            </form>
             </li>
     {% endfor %}
 </ul>
